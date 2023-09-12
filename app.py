@@ -40,18 +40,6 @@ background-size: cover;
 """
 st.markdown(page_bg_img,unsafe_allow_html=True)
 
-#st.sidebar.title("Navigation")
-#page = st.sidebar.radio("Go to", ["Prediction", "EDA & Visualizations", "Contact"])
-
-#selected = option_menu("StartUp Project " , ["Predict", "Analysis", "Report", 'Communication'],
- #                       icons=['house', 'gear' , "list-task",'cloud-upload'],
-  #                      menu_icon="cast", default_index=0, orientation="horizontal",
-   #                     styles={
-    #                        "container": {"padding": "0!important", "background-color": "#fafafa"},
-     #                       "icon": {"color": "orange", "font-size": "25px"},
-      #                      "nav-link": {"font-size": "25px", "text-align": "left", "margin": "0px",
-       #                                  "--hover-color": "#eee"},
-        #                    "nav-link-selected": {"background-color": "green"}})
 
 with st.sidebar:
     selected = option_menu("StartUp Project ", ["Predict", "Analysis", "Report", 'Large Language M', "---", 'Communication'],
@@ -70,11 +58,9 @@ if selected == "Predict":
 
     # Modeli yükleyin
     # Modelin tam yolunu kullanarak modeli yükleyin
-    #model_path = 'pickle_clean_crunchbase.pkl'
-    #model = pickle.load(model_path)
 
-    with open('x_test.pkl', 'rb') as file:
-        model = pickle.load(file)
+    #with open('x_test.pkl', 'rb') as file:
+        #model = pickle.load(file)
 
 
     # Kullanıcıdan girdi alacağız
