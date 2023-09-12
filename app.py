@@ -21,15 +21,19 @@ import joblib
 
 from streamlit_option_menu import option_menu
 
+
 #############################################
 # Sayfaların Oluşumu
 #############################################
 
+# Page Config
 st.set_page_config(
     page_title='DataStrophic2',
     layout="wide",
     page_icon="💰")
 
+
+# Sidebar background image
 page_bg_img = """
 <style>
 [data-testid="stSidebar"] {
@@ -38,12 +42,14 @@ background-size: cover;
 }
 </style>
 """
-st.markdown(page_bg_img,unsafe_allow_html=True)
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
+# sidebar menu belirleme
 with st.sidebar:
-    selected = option_menu("StartUp Project ", ["Predict", "Analysis", "Report", 'Large Language M', "---", 'Communication'],
-                           icons=['house', 'gear', None, "list-task",  "list-task", 'cloud-upload'], menu_icon="cast",
+    selected = option_menu("StartUp Project ",
+                           ["Predict", "Analysis", "Report", 'Large Language M', "---", 'Communication'],
+                           icons=['house', 'gear', None, "list-task", "list-task", 'cloud-upload'], menu_icon="cast",
                            default_index=0)
 
 
@@ -59,112 +65,113 @@ if selected == "Predict":
     # Modeli yükleyin
     # Modelin tam yolunu kullanarak modeli yükleyin
 
-    #with open('x_test.pkl', 'rb') as file:
-        #model = pickle.load(file)
-
+    with open('pickle_clean_crunchbase.pkl', 'rb') as file:
+        model = pickle.load(file)
 
     # Kullanıcıdan girdi alacağız
     # Özellikleri belirtin ve değerlerini isteyin
 
     st.sidebar.title("Startup Değerlerinizi Giriniz")
 
+
     # Collects user input features into dataframe
-    #uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
-    #if uploaded_file is not None:
-        #input_df = pd.read_csv(uploaded_file)
+    # uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+    # if uploaded_file is not None:
+    # input_df = pd.read_csv(uploaded_file)
     def user_input_features():
-        country_mm = st.sidebar.selectbox("country", ( 'Turkey', 'United States', 'United Kingdom',
-                                                   'Canada', 'China', 'Germany', 'France','India',
-                                                   'Israel', 'Spain', 'Russia', 'Sweden', 'Italy', 'Netherlands',
-                                                   'Ireland', 'Singapure', 'Norway', 'Poland'))
+        country_mm = st.sidebar.selectbox("country", ('Turkey', 'United States', 'United Kingdom',
+                                                      'Canada', 'China', 'Germany', 'France', 'India',
+                                                      'Israel', 'Spain', 'Russia', 'Sweden', 'Italy', 'Netherlands',
+                                                      'Ireland', 'Singapure', 'Norway', 'Poland'))
         recency_mm = st.sidebar.number_input("recency", step=100)
         funding_total_usd_mm = st.sidebar.slider('funding_total_usd', 0, 100000, 1000000000)
         seed_mm = st.sidebar.slider('seed', 0, 100000, 10000000)
         venture_mm = st.sidebar.number_input('venture', step=1)
         round_A_mm = st.sidebar.number_input('round_A', step=1)
-        diff_funding_months_mm = st.sidebar.date_input("diff_funding_months")   #burası date aralığı olabilir ?
-        diff_first_funding_months_mm = st.sidebar.date_input("diff_first_funding_months" ) # https://docs.streamlit.io/library/api-reference/widgets/st.date_input buradan yapılabilir
+        diff_funding_months_mm = st.sidebar.date_input("diff_funding_months")  # burası date aralığı olabilir ?
+        diff_first_funding_months_mm = st.sidebar.date_input(
+            "diff_first_funding_months")  # https://docs.streamlit.io/library/api-reference/widgets/st.date_input buradan yapılabilir
         round_A_H_total_mm = st.sidebar.number_input('round_A_H_total', step=1)
         avg_fund_size_mm = st.sidebar.slider("avg_fund_size", 0, 10000, 9009090)
 
-        #market_mm = st.sidebar.selectbox('market', ('Publishing','Electronics','Tourism'
+        # market_mm = st.sidebar.selectbox('market', ('Publishing','Electronics','Tourism'
         #                                             'Software','Biotechnology','Education'))
-        #status_mm = st.sidebar.radio("Status",('Acquired', 'Closed', 'Operating'))
-        #equity_crowdfunding_mm = st.sidebar.radio("equity_crowdfunding",('Acquired', 'Closed', 'Operating'))
-        #undisclosed_mm = st.sidebar.radio("undisclosed",('Acquired', 'Closed', 'Operating'))
-        #convertible_note_mm = st.sidebar.radio("convertible_note",('Acquired', 'Closed', 'Operating'))
-        #debt_financing_mm = st.sidebar.radio("debt_financing",('Acquired', 'Closed', 'Operating'))
-        #angel_mm = st.sidebar.radio("angel", ('Acquired', 'Closed', 'Operating'))
-        #grant_mm = st.sidebar.radio("grant", ('Acquired', 'Closed', 'Operating'))
-        #private_equity_mm = st.sidebar.radio("private_equity", ('Acquired', 'Closed', 'Operating'))
-        #post_ipo_equity_mm = st.sidebar.radio("post_ipo_equity", ('Acquired', 'Closed', 'Operating'))
-        #post_ipo_debt_mm = st.sidebar.radio("post_ipo_debt", ('Acquired', 'Closed', 'Operating'))
-        #secondary_market_mm = st.sidebar.radio("secondary_market", ('Acquired', 'Closed', 'Operating'))
-        #product_crowdfunding_mm = st.sidebar.radio("product_crowdfunding", ('Acquired', 'Closed', 'Operating'))
-        #round_B_mm = st.sidebar.radio("round_B", ('Acquired', 'Closed', 'Operating'))
-        #round_C_mm = st.sidebar.radio("round_C", ('Acquired', 'Closed', 'Operating'))
-        #round_D_mm = st.sidebar.radio("round_D", ('Acquired', 'Closed', 'Operating'))
-        #round_E_mm = st.sidebar.radio("round_E", ('Acquired', 'Closed', 'Operating'))
-        #round_F_mm = st.sidebar.radio("round_F", ('Acquired', 'Closed', 'Operating'))
-        #round_G_mm = st.sidebar.radio("round_G", ('Acquired', 'Closed', 'Operating'))
-        #round_H_mm = st.sidebar.radio("round_H", ('Acquired', 'Closed', 'Operating'))
-        #angel_status_mm = st.sidebar.radio("angel_status", ('Acquired', 'Closed', 'Operating'))
-        #grant_status_mm = st.sidebar.radio("grant_status", ('Acquired', 'Closed', 'Operating'))
-        #ratio_seed_tot_mm = st.sidebar.radio("ratio_seed_tot", ('Acquired', 'Closed', 'Operating'))
-        #ratio_debt_tot_mm = st.sidebar.radio("ratio_debt_tot", ('Acquired', 'Closed', 'Operating'))
-        #convertible_status_mm = st.sidebar.radio("convertible_status", ('Acquired', 'Closed', 'Operating'))
-        #seed_quartiles_mm = st.sidebar.radio("seed_quartiles", ('Acquired', 'Closed', 'Operating'))
-        #angel_degree_mm = st.sidebar.radio("angel_degree", ('Acquired', 'Closed', 'Operating'))
-        #tot_funding_degree_mm = st.sidebar.radio("tot_funding_degree", ('Acquired', 'Closed', 'Operating'))
-        #venture_degree_mm = st.sidebar.radio("venture_degree", ('Acquired', 'Closed', 'Operating'))
-        #start_postion_mm = st.sidebar.radio("start_postion", ('Acquired', 'Closed', 'Operating'))
-        #secondary_status_mm = st.sidebar.radio("secondary_status", ('Acquired', 'Closed', 'Operating'))
+        # status_mm = st.sidebar.radio("Status",('Acquired', 'Closed', 'Operating'))
+        # equity_crowdfunding_mm = st.sidebar.radio("equity_crowdfunding",('Acquired', 'Closed', 'Operating'))
+        # undisclosed_mm = st.sidebar.radio("undisclosed",('Acquired', 'Closed', 'Operating'))
+        # convertible_note_mm = st.sidebar.radio("convertible_note",('Acquired', 'Closed', 'Operating'))
+        # debt_financing_mm = st.sidebar.radio("debt_financing",('Acquired', 'Closed', 'Operating'))
+        # angel_mm = st.sidebar.radio("angel", ('Acquired', 'Closed', 'Operating'))
+        # grant_mm = st.sidebar.radio("grant", ('Acquired', 'Closed', 'Operating'))
+        # private_equity_mm = st.sidebar.radio("private_equity", ('Acquired', 'Closed', 'Operating'))
+        # post_ipo_equity_mm = st.sidebar.radio("post_ipo_equity", ('Acquired', 'Closed', 'Operating'))
+        # post_ipo_debt_mm = st.sidebar.radio("post_ipo_debt", ('Acquired', 'Closed', 'Operating'))
+        # secondary_market_mm = st.sidebar.radio("secondary_market", ('Acquired', 'Closed', 'Operating'))
+        # product_crowdfunding_mm = st.sidebar.radio("product_crowdfunding", ('Acquired', 'Closed', 'Operating'))
+        # round_B_mm = st.sidebar.radio("round_B", ('Acquired', 'Closed', 'Operating'))
+        # round_C_mm = st.sidebar.radio("round_C", ('Acquired', 'Closed', 'Operating'))
+        # round_D_mm = st.sidebar.radio("round_D", ('Acquired', 'Closed', 'Operating'))
+        # round_E_mm = st.sidebar.radio("round_E", ('Acquired', 'Closed', 'Operating'))
+        # round_F_mm = st.sidebar.radio("round_F", ('Acquired', 'Closed', 'Operating'))
+        # round_G_mm = st.sidebar.radio("round_G", ('Acquired', 'Closed', 'Operating'))
+        # round_H_mm = st.sidebar.radio("round_H", ('Acquired', 'Closed', 'Operating'))
+        # angel_status_mm = st.sidebar.radio("angel_status", ('Acquired', 'Closed', 'Operating'))
+        # grant_status_mm = st.sidebar.radio("grant_status", ('Acquired', 'Closed', 'Operating'))
+        # ratio_seed_tot_mm = st.sidebar.radio("ratio_seed_tot", ('Acquired', 'Closed', 'Operating'))
+        # ratio_debt_tot_mm = st.sidebar.radio("ratio_debt_tot", ('Acquired', 'Closed', 'Operating'))
+        # convertible_status_mm = st.sidebar.radio("convertible_status", ('Acquired', 'Closed', 'Operating'))
+        # seed_quartiles_mm = st.sidebar.radio("seed_quartiles", ('Acquired', 'Closed', 'Operating'))
+        # angel_degree_mm = st.sidebar.radio("angel_degree", ('Acquired', 'Closed', 'Operating'))
+        # tot_funding_degree_mm = st.sidebar.radio("tot_funding_degree", ('Acquired', 'Closed', 'Operating'))
+        # venture_degree_mm = st.sidebar.radio("venture_degree", ('Acquired', 'Closed', 'Operating'))
+        # start_postion_mm = st.sidebar.radio("start_postion", ('Acquired', 'Closed', 'Operating'))
+        # secondary_status_mm = st.sidebar.radio("secondary_status", ('Acquired', 'Closed', 'Operating'))
 
-
-        data = {#'market': market_mm,
-                'funding_total_usd': funding_total_usd_mm,
-                #'status': status_mm,
-                'seed': seed_mm,
-                'venture': venture_mm,
-                #'equity_crowdfunding': equity_crowdfunding_mm,
-                #'undisclosed': undisclosed_mm,
-                #'convertible_note': convertible_note_mm,
-                #'debt_financing': debt_financing_mm,
-                #'angel': angel_mm,
-                #'grant': grant_mm,
-                #'private_equity': private_equity_mm,
-                #'post_ipo_equity': post_ipo_equity_mm,
-                #'post_ipo_debt': post_ipo_debt_mm,
-                #'secondary_market': secondary_market_mm,
-                #'product_crowdfunding': product_crowdfunding_mm,
-                'round_A': round_A_mm,
-                #'round_B': round_B_mm,
-                #'round_C': round_C_mm,
-                #'round_D': round_D_mm,
-                #'round_E': round_E_mm,
-                #'round_F': round_F_mm,
-                #'round_G': round_G_mm,
-                #'round_H': round_H_mm,
-                'country': country_mm,
-                'diff_funding_months': diff_funding_months_mm,
-                'diff_first_funding_months': diff_first_funding_months_mm,
-                'round_A_H_total': round_A_H_total_mm,
-                #'angel_status': angel_status_mm,
-                #'grant_status': grant_status_mm,
-                'avg_fund_size': avg_fund_size_mm,
-                #'ratio_seed_tot': ratio_seed_tot_mm,
-                #'ratio_debt_tot': ratio_debt_tot_mm,
-                #'convertible_status': convertible_status_mm,
-                #'seed_quartiles': seed_quartiles_mm,
-                #'angel_degree': angel_degree_mm,
-                #'tot_funding_degree': tot_funding_degree_mm,
-                #'venture_degree': venture_degree_mm,
-                #'start_postion': start_postion_mm,
-                #'secondary_status': secondary_status_mm,
-                'recency': recency_mm}
+        data = {  # 'market': market_mm,
+            'funding_total_usd': funding_total_usd_mm,
+            # 'status': status_mm,
+            'seed': seed_mm,
+            'venture': venture_mm,
+            # 'equity_crowdfunding': equity_crowdfunding_mm,
+            # 'undisclosed': undisclosed_mm,
+            # 'convertible_note': convertible_note_mm,
+            # 'debt_financing': debt_financing_mm,
+            # 'angel': angel_mm,
+            # 'grant': grant_mm,
+            # 'private_equity': private_equity_mm,
+            # 'post_ipo_equity': post_ipo_equity_mm,
+            # 'post_ipo_debt': post_ipo_debt_mm,
+            # 'secondary_market': secondary_market_mm,
+            # 'product_crowdfunding': product_crowdfunding_mm,
+            'round_A': round_A_mm,
+            # 'round_B': round_B_mm,
+            # 'round_C': round_C_mm,
+            # 'round_D': round_D_mm,
+            # 'round_E': round_E_mm,
+            # 'round_F': round_F_mm,
+            # 'round_G': round_G_mm,
+            # 'round_H': round_H_mm,
+            'country': country_mm,
+            'diff_funding_months': diff_funding_months_mm,
+            'diff_first_funding_months': diff_first_funding_months_mm,
+            'round_A_H_total': round_A_H_total_mm,
+            # 'angel_status': angel_status_mm,
+            # 'grant_status': grant_status_mm,
+            'avg_fund_size': avg_fund_size_mm,
+            # 'ratio_seed_tot': ratio_seed_tot_mm,
+            # 'ratio_debt_tot': ratio_debt_tot_mm,
+            # 'convertible_status': convertible_status_mm,
+            # 'seed_quartiles': seed_quartiles_mm,
+            # 'angel_degree': angel_degree_mm,
+            # 'tot_funding_degree': tot_funding_degree_mm,
+            # 'venture_degree': venture_degree_mm,
+            # 'start_postion': start_postion_mm,
+            # 'secondary_status': secondary_status_mm,
+            'recency': recency_mm}
 
         features = pd.DataFrame(data, index=[0])
         return features
+
 
     input_df = user_input_features()
 
@@ -172,19 +179,16 @@ if selected == "Predict":
                            'round_A', 'diff_funding_months', 'diff_first_funding_months',
                            'round_A_H_total', 'avg_fund_size']])
 
-    # verisetini alıyoruz
-    #df = pd.read_csv("balanced_df.csv")
 
-    with open('pickle_clean_crunchbase', 'rb') as file:
+
+    with open('pickle_clean_crunchbase.pkl', 'rb') as file:
         df = pickle.load(file)
-
-
 
     tahmin_seti = pd.concat([input_df, df], axis=0)
     st.write("Let's view the merged dataset ...")
     st.write(tahmin_seti[['country', 'recency', 'funding_total_usd', 'seed', 'venture',
-                           'round_A', 'diff_funding_months', 'diff_first_funding_months',
-                           'round_A_H_total', 'avg_fund_size']].head())
+                          'round_A', 'diff_funding_months', 'diff_first_funding_months',
+                          'round_A_H_total', 'avg_fund_size']].head())
 
 
 
@@ -202,7 +206,7 @@ if selected == "Analysis":
 #############################################
 
 if selected == "Report":
-    #report = pd.read_csv("visualsdf.csv")
+    
 
     st.write(" Veri Setimizi Tanıyalım")
 
