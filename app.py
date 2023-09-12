@@ -173,9 +173,9 @@ if selected == "Predict":
                            'round_A_H_total', 'avg_fund_size']])
 
     # verisetini alıyoruz
-    df = pd.read_csv("balanced_df.csv")
+    #df = pd.read_csv("balanced_df.csv")
 
-    with open('model_ready_ds.pkl', 'rb') as file:
+    with open('pickle_clean_crunchbase', 'rb') as file:
         df = pickle.load(file)
 
 
