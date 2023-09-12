@@ -6,3 +6,4 @@ pandas-profiling
 seaborn
 streamlit_pandas_profiling
 streamlit_option_menu
+streamlit_extras
